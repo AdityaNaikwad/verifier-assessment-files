@@ -1,238 +1,127 @@
-Web Verifier Take-Home Assessment
+## 🧪 Web Verifier Take-Home Assessment
+ A structured verification system that:
+- 🔎 Validates GitHub issue search URLs
+- 🌐 Verifies live DOM state from Wikipedia
+- 📄 Validates static HTML snapshots (no network)
+- 📊 Returns structured evidence (not just pass/fail)
 
-This repository implements three independent verifiers as required:
+## 🧰 Tech Stack:-
+- Python 3.10+
+- urllib.parse
+- playwright
+- beautifulsoup4
 
-Task 1 — URL Verifier
+## 📦 Setup Instructions
 
-Task 2 — DOM Verifier (Live Page)
+### 1. Clone the Repository
 
-Task 3 — Snapshot DOM Verifier (No Network)
+```bash
+git clone https://github.com/YOUR_USERNAME/web-verifier-takehome.git
+cd web-verifier-takehome
+```
+---
+### 2. Create Virtual Environment
 
-Each verifier returns structured output:
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+---
+### 3. Install Requirements
 
-{
-  "success": true | false,
-  "reason": "Explanation of result",
-  "evidence": { extracted_data }
-}
-
-
-The output always includes extracted evidence — not just true/false.
-
-Project Structure:-
-VERIFIER-ASSESSMENT-FILES/
-│
-├── verifiers/
-│     ├── url_verifier.py
-│     ├── wikipedia_verifier.py
-│     ├── snapshot_verifier.py
-│
-├── task2.py
-├── task3.py
-├── requirements.txt
-├── README.md
-
-Installation
-
-Install dependencies:
-
+```bash
 pip install -r requirements.txt
+```
+---
+### 4. Install Playwright Browser
+```bash
 playwright install
+```
+---
 
-Task 1 — URL Verifier
+## 🔎 Task 1 — URL Verifier
+- File: `verifiers/url_verifier.py`
+Runner: `Task1.py`
+- Goal
+   Verify that a GitHub issue search URL satisfies:
+    - repo = microsoft/playwright
+    - type = issues
+    - state = open
+    - label = bug
 
-File:
-verifiers/url_verifier.py
+# How to Use
+Call the function:
+-   `verify_github_issue_search(url, constraints)`
 
-Goal
 
-Verify a GitHub issue search URL satisfies:
+Returns:
+```bash
+{
+  "success": true,
+  "reason": "All constraints satisfied",
+  "evidence": {
+    "repo": "microsoft/playwright",
+    "is": ["issue", "open"],
+    "label": "bug"
+  }
+```
+---
 
-repo = microsoft/playwright
+## 🌐 Task 2 — DOM Verifier (Live Page)
 
-type = issues
-
-state = open
-
-label = bug
-
-Implementation Details
-
-Uses urllib.parse
-
-Decodes URL encoding
-
-Normalizes tokens (case-insensitive)
-
-Parses search query into structured dictionary
-
-Performs semantic validation (not raw string matching)
-
-Order of tokens does not matter
-
-Extra parameters allowed
-
-Output Includes
-
-Extracted repo
-
-Extracted state tokens
-
-Extracted label
-
-Clear reason for failure if constraints missing
-
-Task 2 — DOM Verifier (Live Wikipedia Page)
-
-Logic File:
-verifiers/wikipedia_verifier.py
-
-Runner:
-task2.py
-
-Goal
-
+- Logic File: `verifiers/wikipedia_verifier.py`
+- Runner: `task2.py`
+# Goal
 From:
+`https://en.wikipedia.org/wiki/Taj_Mahal`
 
-https://en.wikipedia.org/wiki/Taj_Mahal
+- Verify:
+  Page title contains "Taj Mahal"
+  Infobox location contains "Agra"
 
-
-Verify:
-
-Page title contains "Taj Mahal"
-
-Infobox location contains "Agra" (case-insensitive, partial match allowed)
-
-Implementation Details
-
-Uses Playwright (headless Chromium)
-
-Extracts:
-
-h1#firstHeading for title
-
-Iterates .infobox tr
-
-Matches th containing "Location"
-
-Extracts corresponding td
-
-Avoids brittle nth-child selectors
-
-Defensive handling if elements missing
-
-Graceful network failure handling
-
-Run
+# ▶ Run
+```bash
 python task2.py
+Enter URL when prompted.
+```
+---
 
+## 📄 Task 3 — Snapshot DOM Verifier (No Network)
 
-Enter the Wikipedia URL when prompted.
+- Logic File: `verifiers/snapshot_verifier.py`
+- Runner: `task3.py`
 
-Task 3 — Snapshot DOM Verifier (No Network)
-
-Logic File:
-verifiers/snapshot_verifier.py
-
-Runner:
-task3.py
-
-Goal
-
-From provided snapshot HTML:
-
-Price ≤ 3000
-
-City = "Pune" (case-insensitive)
-
-Bedrooms = 2
-
-Implementation Details
-
-Uses BeautifulSoup
-
-Extracts via data attributes:
-
-[data-price]
-
-[data-city]
-
-[data-bedrooms]
-
-Converts values to correct types
-
-Collects violations explicitly
-
-No network calls
-
-Run
+- Goal
+  From snapshot HTML:
+  - Price ≤ 3000
+  - City = "Pune"
+  - Bedrooms = 2
+# ▶ Run
+```bash
 python task3.py
-
-
 Enter snapshot file path when prompted.
-
-Assumptions Made
-
-URL token order does not matter.
-
-URL encoding variations are normalized.
-
-Extra URL parameters are allowed if required constraints are present.
-
-Wikipedia page structure follows standard infobox layout.
-
-Snapshot HTML uses stable data attributes.
-
-Case-insensitive matching is acceptable for text validation.
-
-Error Handling
-
-All verifiers handle:
-
-Missing elements
-
-Malformed HTML
-
-Network failure
-
-Timeout
-
-File read errors
-
-Failures return:
-
+```
+# Failures return:
+```bash
 {
   "success": false,
   "reason": "Clear explanation",
   "evidence": {}
 }
+```
+---
 
-Design Decisions
-
-Separation of logic and runner files
-
-Semantic constraint validation
-
-Structured evidence reporting
-
-Defensive DOM traversal
-
-Minimal and relevant dependencies only
-
-Dependencies
-playwright
-beautifulsoup4
-
-Result
-
-All provided test cases pass/fail as expected.
-
-The implementation prioritizes:
-
-Correctness
-
-Robustness
-
-Clean architecture
-
-Clear evidence extraction
+```bash
+📂 Project Structure
+web-verifier-takehome/
+│
+├── verifiers/
+│   ├── url_verifier.py
+│   ├── wikipedia_verifier.py
+│   └── snapshot_verifier.py
+│
+├── task2.py
+├── task3.py
+├── requirements.txt
+└── README.md
+```
