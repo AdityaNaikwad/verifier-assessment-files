@@ -1,7 +1,6 @@
 from urllib.parse import urlparse, parse_qs, unquote
 from typing import Dict, Any
 
-
 def parse_search_tokens(url: str) -> Dict[str, Any]:
     parsed = urlparse(url)
     query_params = parse_qs(parsed.query)
